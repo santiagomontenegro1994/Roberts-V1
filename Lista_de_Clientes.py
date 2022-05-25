@@ -1,6 +1,4 @@
 
-from cProfile import label
-from optparse import Values
 from tkinter import *
 from tkinter import ttk
 import sqlite3
