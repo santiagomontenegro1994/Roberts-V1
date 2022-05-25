@@ -86,6 +86,7 @@ class ListaDeClientes:
             self.nombre.delete(0,END)
             self.telefono.delete(0,END)
             self.cuit.delete(0,END)
+            self.get_clientes()
         else:
             self.mensaje['text'] = 'Nombre y Telefono son requeridos'
             self.get_clientes()
