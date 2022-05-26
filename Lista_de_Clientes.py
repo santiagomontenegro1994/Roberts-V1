@@ -122,7 +122,7 @@ class ListaDeClientes:
         Entry(self.ventana_editar, textvariable=StringVar(self.ventana_editar, value= old_nombre), state = 'readonly').grid(row=0, column=2)
         # Nombre Nuevo
         Label(self.ventana_editar, text ='Nuevo Nombre').grid(row=1, column=1)
-        nuevo_nombre = Entry(self.ventana_editar)
+        nuevo_nombre = Entry(self.ventana_editar, textvariable=StringVar(self.ventana_editar, value= old_nombre))
         nuevo_nombre.grid(row=1, column=2)
         
         # Telefono Anterior
@@ -130,7 +130,7 @@ class ListaDeClientes:
         Entry(self.ventana_editar, textvariable=StringVar(self.ventana_editar, value= old_telefono), state = 'readonly').grid(row=2, column=2)
         # Telefono Nuevo
         Label(self.ventana_editar, text ='Nuevo Telefono').grid(row=3, column=1)
-        nuevo_telefono = Entry(self.ventana_editar)
+        nuevo_telefono = Entry(self.ventana_editar, textvariable=StringVar(self.ventana_editar, value= old_telefono))
         nuevo_telefono.grid(row=3, column=2)
         
         # Cuit Anterior
@@ -138,20 +138,23 @@ class ListaDeClientes:
         Entry(self.ventana_editar, textvariable=StringVar(self.ventana_editar, value= old_cuit), state = 'readonly').grid(row=4, column=2)
         # Cuit Nuevo
         Label(self.ventana_editar, text ='Nuevo Cuit').grid(row=5, column=1)
-        nuevo_cuit = Entry(self.ventana_editar)
+        nuevo_cuit = Entry(self.ventana_editar, textvariable=StringVar(self.ventana_editar, value= old_cuit))
         nuevo_cuit.grid(row=5, column=2)
         
         #boton para agregar 
         Button(self.ventana_editar, text='Editar', command=lambda: self.edit_records(nuevo_nombre.get(), old_nombre, nuevo_telefono.get(), old_telefono, nuevo_cuit.get())).grid(row=6, column=2, sticky=W + E)
     
     def edit_records(self, nuevo_nombre, old_nombre, nuevo_telefono, old_telefono, nuevo_cuit,):
-        query= 'UPDATE Clientes set nombre = ?, telefono = ?, cuit = ? WHERE nombre = ? AND telefono = ?'
-        parameters = (nuevo_nombre, nuevo_telefono, nuevo_cuit, old_nombre, old_telefono)
-        self.run_query(query, parameters) #le paso la consulta
-        self.ventana_editar.destroy() #cierro la ventana editar
-        self.mensaje['text'] = 'datos del cliente {} modificados correctamente'.format(old_nombre)
-        self.get_clientes()
-    
+        if  len(nuevo_nombre) != 0 and len(nuevo_telefono) !=0:  #valido que no le pasen valores vacios
+            query= 'UPDATE Clientes set nombre = ?, telefono = ?, cuit = ? WHERE nombre = ? AND telefono = ?'
+            parameters = (nuevo_nombre, nuevo_telefono, nuevo_cuit, old_nombre, old_telefono)
+            self.run_query(query, parameters) #le paso la consulta
+            self.ventana_editar.destroy() #cierro la ventana editar
+            self.mensaje['text'] = 'Datos del cliente {} modificados correctamente'.format(nuevo_nombre)
+            self.get_clientes()
+        else:
+            self.mensaje['text'] = 'Nombre y Telefono son requeridos'
+        
         
 if __name__ == '__main__':
     window = Tk()

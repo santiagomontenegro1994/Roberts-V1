@@ -101,7 +101,7 @@ class listaDeProductos:
         try:
             self.tabla.item(self.tabla.selection())['text'][0]
         except IndexError as e:
-            self.mensaje['text']='Porfavor selecciona un cliente'
+            self.mensaje['text']='Porfavor selecciona un producto'
             return
         
         old_producto = self.tabla.item(self.tabla.selection())['text']
@@ -114,7 +114,7 @@ class listaDeProductos:
         Entry(self.ventana_editar, textvariable=StringVar(self.ventana_editar, value= old_producto), state = 'readonly').grid(row=0, column=2)
         # Producto Nuevo
         Label(self.ventana_editar, text ='Nuevo Producto').grid(row=1, column=1)
-        nuevo_producto = Entry(self.ventana_editar)
+        nuevo_producto = Entry(self.ventana_editar,  textvariable=StringVar(self.ventana_editar, value= old_producto))
         nuevo_producto.grid(row=1, column=2)
         
         # Precio Anterior
@@ -122,21 +122,25 @@ class listaDeProductos:
         Entry(self.ventana_editar, textvariable=StringVar(self.ventana_editar, value= old_precio), state = 'readonly').grid(row=2, column=2)
         # Precio Nuevo
         Label(self.ventana_editar, text ='Nuevo Precio').grid(row=3, column=1)
-        nuevo_precio = Entry(self.ventana_editar)
+        nuevo_precio = Entry(self.ventana_editar, textvariable=StringVar(self.ventana_editar, value= old_precio))
         nuevo_precio.grid(row=3, column=2)
-        
         
         #boton para agregar 
         Button(self.ventana_editar, text='Editar', command=lambda: self.edit_records(nuevo_producto.get(), old_producto, nuevo_precio.get(), old_precio)).grid(row=6, column=2, sticky=W + E)
-
+ 
+    
     def edit_records(self, nuevo_producto, old_producto, nuevo_precio, old_precio):
-        query= 'UPDATE Productos set producto = ?, precio = ? WHERE producto = ? AND precio = ?'
-        parameters = (nuevo_producto, nuevo_precio, old_producto, old_precio)
-        self.run_query(query, parameters) #le paso la consulta
-        self.ventana_editar.destroy() #cierro la ventana editar
-        self.mensaje['text'] = 'Datos del producto {} modificados correctamente'.format(old_producto)
-        self.get_productos()
-
+        if  len(nuevo_producto) != 0 and len(nuevo_precio) !=0:  
+            query= 'UPDATE Productos set producto = ?, precio = ? WHERE producto = ? AND precio = ?'
+            parameters = (nuevo_producto, nuevo_precio, old_producto, old_precio)
+            self.run_query(query, parameters) #le paso la consulta
+            self.ventana_editar.destroy() #cierro la ventana editar
+            self.mensaje['text'] = 'Datos del producto {} modificados correctamente'.format(nuevo_producto)
+            self.get_productos()
+        else:
+            self.mensaje['text'] = 'Producto y Precio son requeridos'
+            
+            
 window = Tk()
 programa = listaDeProductos(window)
 window.mainloop()        
