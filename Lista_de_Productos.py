@@ -130,7 +130,7 @@ class listaDeProductos:
  
     
     def edit_records(self, nuevo_producto, old_producto, nuevo_precio, old_precio):
-        if  len(nuevo_producto) != 0 and len(nuevo_precio) !=0:  
+        if  len(nuevo_producto) != 0 and len(nuevo_precio) !=0:  #valido que no le pasen valores vacios
             query= 'UPDATE Productos set producto = ?, precio = ? WHERE producto = ? AND precio = ?'
             parameters = (nuevo_producto, nuevo_precio, old_producto, old_precio)
             self.run_query(query, parameters) #le paso la consulta
