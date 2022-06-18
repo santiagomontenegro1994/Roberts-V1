@@ -1,21 +1,19 @@
-
 from tkinter import *
 from tkinter import ttk
 import tkinter as tk
 import sqlite3
 
-
-class ListaDeClientes():
+class ListaDeProveedores():
     
     db_nombre = 'database.db' 
     
     def __init__(self,window):
         self.wind=window
-        self.wind.title("Lista de Clientes")
+        self.wind.title("Lista de Proveedores")
         self.wind.geometry('600x400')
         
         #creando contenedor
-        frame=LabelFrame(self.wind, text = 'Registra un nuevo Cliente')
+        frame=LabelFrame(self.wind, text = 'Registra un nuevo Proveedor')
         frame.grid(row=0, column=0, columnspan=3, pady = 20)
         
         #nombre cliente
@@ -34,14 +32,14 @@ class ListaDeClientes():
         self.cuit = Entry(frame)
         self.cuit.grid(row=3, column=1)
         
-        #boton agregar cliente
-        ttk.Button(frame, text="Guardar Cliente", command = self.add_clientes).grid(row= 4, columnspan=2, sticky=W + E)
+        #boton agregar proveedor
+        ttk.Button(frame, text="Guardar Proveedor", command = self.add_proveedor).grid(row= 4, columnspan=2, sticky=W + E)
         
         #mensajes de notificacion
         self.mensaje = Label(self.wind,text = '', fg = 'red')
         self.mensaje.grid(row=3, column=0, columnspan=3, sticky=W + E)
         
-        #tabla de clientes
+        #tabla de proveedores
         self.tabla = ttk.Treeview(self.wind, columns=("tel", "cuit"))
         self.tabla.grid(row=6, column=0, columnspan=3)
         self.tabla.heading('#0', text= 'Nombre', anchor=CENTER)
@@ -49,11 +47,11 @@ class ListaDeClientes():
         self.tabla.heading('#2', text= 'Cuit', anchor=CENTER)
         
         #boton para eliminar y Editar
-        ttk.Button(self.wind,text = 'Eliminar', command = self.delete_cliente).grid(row=5, column=0, sticky=W + E)
-        ttk.Button(self.wind, text = 'Editar', command= self.edit_clientes).grid(row=5, column=1, sticky=W + E)
+        ttk.Button(self.wind,text = 'Eliminar', command = self.delete_proveedor).grid(row=5, column=0, sticky=W + E)
+        ttk.Button(self.wind, text = 'Editar', command= self.edit_proveedor).grid(row=5, column=1, sticky=W + E)
         
         #llenando las filas de la tabla 
-        self.get_clientes()
+        self.get_proveedores()
         
     def run_query(self, query, parameters =()):
         with sqlite3.connect(self.db_nombre) as conn:
@@ -62,13 +60,13 @@ class ListaDeClientes():
             conn.commit()
         return result        
 
-    def get_clientes(self):
+    def get_proveedores(self):
         #limpiando la tabla
         records = self.tabla.get_children()
         for element in records:
             self.tabla.delete(element)
         #consultando los datos    
-        query = 'SELECT * FROM Clientes ORDER BY nombre ASC'
+        query = 'SELECT * FROM Proveedores ORDER BY nombre ASC'
         db_rows=self.run_query(query)
         #rellenando los datos
         for row in db_rows:
@@ -77,47 +75,47 @@ class ListaDeClientes():
     def validacion(self): #valida para que no pase un dato vacio
         return len(self.nombre.get()) != 0 and len(self.telefono.get()) !=0      
         
-    def add_clientes(self):  #metodo para agregar clientes
+    def add_proveedor(self):  #metodo para agregar clientes
         if self.validacion():
-            query = 'INSERT INTO Clientes VALUES(NULL, ?, ?, ?)'
+            query = 'INSERT INTO Proveedores VALUES(NULL, ?, ?, ?)'
             parameters = (self.nombre.get(), self.telefono.get(), self.cuit.get())
             self.run_query(query, parameters)
-            self.mensaje['text'] = 'Cliente: {} agregado'.format(self.nombre.get())
+            self.mensaje['text'] = 'Proveedor: {} agregado'.format(self.nombre.get())
             self.nombre.delete(0,END)
             self.telefono.delete(0,END)
             self.cuit.delete(0,END)
-            self.get_clientes()
+            self.get_proveedores()
         else:
             self.mensaje['text'] = 'Nombre y Telefono son requeridos'
-            self.get_clientes()
+            self.get_proveedores()
     
-    def delete_cliente(self):
+    def delete_proveedor(self):
         self.mensaje['text'] = '' # vacio la casilla del mensaje
         try:
             self.tabla.item(self.tabla.selection())['text'][0]
         except IndexError as e:
-            self.mensaje['text']='Porfavor selecciona un cliente'
+            self.mensaje['text']='Porfavor selecciona un proveedor'
             return
         self.mensaje['text'] = '' # vacio la casilla del mensaje
         nombre = self.tabla.item(self.tabla.selection())['text']
-        query = 'DELETE FROM Clientes WHERE nombre = ?'
+        query = 'DELETE FROM Proveedores WHERE nombre = ?'
         self.run_query(query, (nombre,))
-        self.mensaje['text'] = 'Cliente: {} se elimino satisfactoriamente'.format(nombre)
-        self.get_clientes()
+        self.mensaje['text'] = 'Proveedor: {} se elimino satisfactoriamente'.format(nombre)
+        self.get_proveedores()
     
-    def edit_clientes(self):
+    def edit_proveedor(self):
         self.mensaje['text'] = ''
         try:
             self.tabla.item(self.tabla.selection())['text'][0]
         except IndexError as e:
-            self.mensaje['text']='Porfavor selecciona un cliente'
+            self.mensaje['text']='Porfavor selecciona un proveedor'
             return
         
         old_nombre = self.tabla.item(self.tabla.selection())['text']
         old_telefono = self.tabla.item(self.tabla.selection())['values'][0]
         old_cuit = self.tabla.item(self.tabla.selection())['values'][1]
         self.ventana_editar = Toplevel() # ventana de editar
-        self.ventana_editar.title = 'Editar Producto'
+        self.ventana_editar.title = 'Editar Proveedor'
         
         # Nombre Anterior
         Label(self.ventana_editar, text = 'Nombre anterior: ').grid(row=0, column=1)
@@ -148,21 +146,11 @@ class ListaDeClientes():
     
     def edit_records(self, nuevo_nombre, old_nombre, nuevo_telefono, old_telefono, nuevo_cuit,):
         if  len(nuevo_nombre) != 0 and len(nuevo_telefono) !=0:  #valido que no le pasen valores vacios
-            query= 'UPDATE Clientes set nombre = ?, telefono = ?, cuit = ? WHERE nombre = ? AND telefono = ?'
+            query= 'UPDATE Proveedores set nombre = ?, telefono = ?, cuit = ? WHERE nombre = ? AND telefono = ?'
             parameters = (nuevo_nombre, nuevo_telefono, nuevo_cuit, old_nombre, old_telefono)
             self.run_query(query, parameters) #le paso la consulta
             self.ventana_editar.destroy() #cierro la ventana editar
-            self.mensaje['text'] = 'Datos del cliente {} modificados correctamente'.format(nuevo_nombre)
-            self.get_clientes()
+            self.mensaje['text'] = 'Datos del proveedor {} modificados correctamente'.format(nuevo_nombre)
+            self.get_proveedores()
         else:
             self.mensaje['text'] = 'Nombre y Telefono son requeridos'
-        
-        
-#if __name__ == '__main__':
-#    window = Tk()
-#    aplicacion = ListaDeClientes(window) 
-#    window.mainloop()  
-
-        
-    
-

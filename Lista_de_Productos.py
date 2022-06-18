@@ -1,8 +1,9 @@
 from tkinter import *
 from tkinter import ttk
+import tkinter as tk
 import sqlite3
 
-class listaDeProductos:
+class listaDeProductos():
     
     db_nombre = 'database.db' 
     
@@ -29,18 +30,18 @@ class listaDeProductos:
         ttk.Button(frame, text="Guardar Producto", command = self.add_productos).grid(row= 4, columnspan=2, sticky=W + E)
         
         #mensajes de notificacion
-        self.mensaje = Label(text = '', fg = 'red')
+        self.mensaje = Label(self.wind, text = '', fg = 'red')
         self.mensaje.grid(row=3, column=0, columnspan=3, sticky=W + E)
         
         #tabla de productos
-        self.tabla = ttk.Treeview(columns=("Precio"))
+        self.tabla = ttk.Treeview(self.wind, columns=("Precio"))
         self.tabla.grid(row=6, column=0, columnspan=3)
         self.tabla.heading('#0', text= 'Producto', anchor=CENTER)
         self.tabla.heading('#1', text= 'Precio', anchor=CENTER)
         
         #boton para eliminar y Editar
-        ttk.Button(text = 'Eliminar', command=self.delete_productos).grid(row=5, column=0, sticky=W + E)
-        ttk.Button(text = 'Editar', command=self.edit_productos).grid(row=5, column=1, sticky=W + E)
+        ttk.Button(self.wind, text = 'Eliminar', command=self.delete_productos).grid(row=5, column=0, sticky=W + E)
+        ttk.Button(self.wind, text = 'Editar', command=self.edit_productos).grid(row=5, column=1, sticky=W + E)
         
         #llenando las filas de la tabla 
         self.get_productos()
@@ -127,8 +128,7 @@ class listaDeProductos:
         
         #boton para agregar 
         Button(self.ventana_editar, text='Editar', command=lambda: self.edit_records(nuevo_producto.get(), old_producto, nuevo_precio.get(), old_precio)).grid(row=6, column=2, sticky=W + E)
- 
-    
+  
     def edit_records(self, nuevo_producto, old_producto, nuevo_precio, old_precio):
         if  len(nuevo_producto) != 0 and len(nuevo_precio) !=0:  #valido que no le pasen valores vacios
             query= 'UPDATE Productos set producto = ?, precio = ? WHERE producto = ? AND precio = ?'
@@ -141,6 +141,6 @@ class listaDeProductos:
             self.mensaje['text'] = 'Producto y Precio son requeridos'
             
             
-window = Tk()
-programa = listaDeProductos(window)
-window.mainloop()        
+#window = Tk()
+#programa = listaDeProductos(window)
+#window.mainloop()        
