@@ -4,6 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 import sqlite3
+from turtle import width
 from Lista_de_Clientes import ListaDeClientes
 from Lista_de_Proveedores import ListaDeProveedores
 from Lista_de_Productos import listaDeProductos
@@ -55,7 +56,7 @@ class listaDeTrabajos():
         self.style=ttk.Style(self.tabla)
         self.style.configure('Treeview', rowheight=25)
         
-        self.tabla.grid()
+        self.tabla.grid(row=0,column=0)
         self.tabla.heading(1, text="Estado")
         self.tabla.heading(2, text="Fecha")
         self.tabla.heading(3, text="Cliente")
@@ -78,6 +79,10 @@ class listaDeTrabajos():
         self.tabla.column('#9', width=50, anchor='c')
         
         self.tabla.bind('<Double-1>', self.getrow)# al hacer doble click selecciona un cliente con los datos
+        
+        #Agregando la scrollbar
+        yscrollbar=ttk.Scrollbar(wrapper1, orient="vertical", command=self.tabla.yview)
+        yscrollbar.grid(row=0,column=1,  sticky=N + S)
         
         #lleno la lista de elementos
         query="SELECT Estado, Fecha, Cliente, Trabajo, Proveedor, Precio, Seña, Saldo, Id FROM Lista_de_Trabajos" 
@@ -192,7 +197,7 @@ class listaDeTrabajos():
         self.updateLista(rows)
     
     def limpiar(self):
-        query = "SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos"        
+        query = "SELECT Estado, Fecha, Cliente, Trabajo, Proveedor, Precio, Seña, Saldo, Id FROM Lista_de_Trabajos"        
         self.cursor.execute(query)
         rows = self.cursor.fetchall()
         self.updateLista(rows)
