@@ -1,10 +1,9 @@
-from struct import pack
 from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 import sqlite3
-from turtle import width
+from datetime import datetime
 from Lista_de_Clientes import ListaDeClientes
 from Lista_de_Proveedores import ListaDeProveedores
 from Lista_de_Productos import listaDeProductos
@@ -81,8 +80,9 @@ class listaDeTrabajos():
         self.tabla.bind('<Double-1>', self.getrow)# al hacer doble click selecciona un cliente con los datos
         
         #Agregando la scrollbar
-        yscrollbar=ttk.Scrollbar(wrapper1, orient="vertical", command=self.tabla.yview)
-        yscrollbar.grid(row=0,column=1,  sticky=N + S)
+        self.yscrollbar=ttk.Scrollbar(wrapper1, orient="vertical", command=self.tabla.yview)
+        self.yscrollbar.grid(row=0,column=1,  sticky=N + S)
+        self.tabla.configure(yscrollcommand=self.yscrollbar.set)
         
         #lleno la lista de elementos
         query="SELECT Estado, Fecha, Cliente, Trabajo, Proveedor, Precio, Seña, Saldo, Id FROM Lista_de_Trabajos" 
@@ -215,7 +215,8 @@ class listaDeTrabajos():
         
     def agregar(self):
         estado=self.t1.get()
-        fecha='Hoy'
+        fecha=datetime.now()
+        fecha=fecha.strftime('%d-%m-%Y')
         cliente=self.t2.get()
         trabajo=self.t3.get()
         proveedor=self.t4.get()
