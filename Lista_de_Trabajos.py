@@ -29,6 +29,7 @@ class listaDeTrabajos():
         self.t5=tk.StringVar()
         self.t6=tk.StringVar()
         self.t7=tk.StringVar()
+        self.seleccion=tk.IntVar()
         
         #Creando el contenedor
         wrapper1 = LabelFrame(window, text="Lista de Trabajos")
@@ -99,7 +100,17 @@ class listaDeTrabajos():
         self.btn = Button(wrapper2, text="busqueda", command=self.search)
         self.btn.grid(row=0, column=2)
         self.lbtn = Button(wrapper2, text="Limpiar",command=self.limpiar)
-        self.lbtn.grid(row=0, column=3) 
+        self.lbtn.grid(row=0, column=3)
+        self.rbotonTrabajo = tk.Radiobutton(wrapper2, text="Nombre", variable=self.seleccion, value=1, command=self.search)
+        self.rbotonTrabajo.grid(row=0, column=4, padx=15, pady=5)
+        self.rbotonTrabajo = tk.Radiobutton(wrapper2, text="Trabajo", variable=self.seleccion, value=2, command=self.search)
+        self.rbotonTrabajo.grid(row=0, column=5, padx=15, pady=5) 
+        self.rbotonFecha = tk.Radiobutton(wrapper2, text="Fecha", variable=self.seleccion, value=3, command=self.search)
+        self.rbotonFecha.grid(row=0, column=6, padx=15, pady=5)
+        self.rbotonEstado = tk.Radiobutton(wrapper2, text="Estado", variable=self.seleccion, value=4, command=self.search)
+        self.rbotonEstado.grid(row=0, column=7, padx=15, pady=5)
+        self.rbotonId = tk.Radiobutton(wrapper2, text="Id", variable=self.seleccion, value=5, command=self.search)
+        self.rbotonId.grid(row=0, column=8, padx=15, pady=5)
         
         #------------Seccion de carga y modificacion de datos                     
 
@@ -190,11 +201,42 @@ class listaDeTrabajos():
         self.t7.set('')                        
         
     def search(self):
-        q2=self.ent.get()
-        query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Cliente = ?'
-        self.cursor.execute(query, [q2])
-        rows = self.cursor.fetchall()
-        self.updateLista(rows)
+        if self.seleccion.get()==1:
+            q2=self.ent.get()
+            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Nombre = ?'
+            self.cursor.execute(query, [q2])
+            rows = self.cursor.fetchall()
+            self.updateLista(rows)
+        elif self.seleccion.get()==2:
+            q2=self.ent.get()
+            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Trabajo = ?'
+            self.cursor.execute(query, [q2])
+            rows = self.cursor.fetchall()
+            self.updateLista(rows)
+        elif self.seleccion.get()==3:
+            q2=self.ent.get()
+            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Fecha = ?'
+            self.cursor.execute(query, [q2])
+            rows = self.cursor.fetchall()
+            self.updateLista(rows)
+        elif self.seleccion.get()==4:
+            q2=self.ent.get()
+            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Estado = ?'
+            self.cursor.execute(query, [q2])
+            rows = self.cursor.fetchall()
+            self.updateLista(rows)
+        elif self.seleccion.get()==5:
+            q2=self.ent.get()
+            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Id = ?'
+            self.cursor.execute(query, [q2])
+            rows = self.cursor.fetchall()
+            self.updateLista(rows)    
+        else:    
+            q2=self.ent.get()
+            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Cliente = ?'
+            self.cursor.execute(query, [q2])
+            rows = self.cursor.fetchall()
+            self.updateLista(rows)
     
     def limpiar(self):
         query = "SELECT Estado, Fecha, Cliente, Trabajo, Proveedor, Precio, Seña, Saldo, Id FROM Lista_de_Trabajos"        
