@@ -35,10 +35,10 @@ class listaDeTrabajos():
         wrapper1 = LabelFrame(window, text="Lista de Trabajos")
         wrapper2 = LabelFrame(window, text="Busqueda")
         wrapper3 = LabelFrame(window)
-        wrapper4 = LabelFrame(wrapper3, text="Cargar Lista de Trabajos")
-        wrapper5 = LabelFrame(wrapper3, text="Cargar Lista de Productos")
-        wrapper6 = LabelFrame(wrapper3, text="Cargar Lista de Clientes")
-        wrapper7 = LabelFrame(wrapper3, text="Cargar Lista de Proveedores")
+        wrapper4 = LabelFrame(wrapper1, text="Cargar Lista de Trabajos")
+        wrapper5 = LabelFrame(wrapper1, text="Cargar Lista de Productos")
+        wrapper6 = LabelFrame(wrapper1, text="Cargar Lista de Clientes")
+        wrapper7 = LabelFrame(wrapper1, text="Cargar Lista de Proveedores")
         
         
         wrapper1.grid(row=0, column=0, padx=20, pady=10)
@@ -52,7 +52,7 @@ class listaDeTrabajos():
         #------------------------------Seccion de lista
         
         #Creando el treeview
-        self.tabla = ttk.Treeview(wrapper1, columns=(1,2,3,4,5,6,7,8,9), show="headings")
+        self.tabla = ttk.Treeview(wrapper3, columns=(1,2,3,4,5,6,7,8,9), show="headings")
         self.style=ttk.Style(self.tabla)
         self.style.configure('Treeview', rowheight=25)
         
@@ -68,7 +68,7 @@ class listaDeTrabajos():
         self.tabla.heading(9, text="Id")
         
         #dando el ancho de las columnas
-        self.tabla.column('#1', width=70, anchor='c')
+        self.tabla.column('#1', width=90, anchor='c')
         self.tabla.column('#2', width=70, anchor='c')
         self.tabla.column('#3', width=300, anchor='c')
         self.tabla.column('#4', width=300, anchor='c')
@@ -81,15 +81,12 @@ class listaDeTrabajos():
         self.tabla.bind('<Double-1>', self.getrow)# al hacer doble click selecciona un cliente con los datos
         
         #Agregando la scrollbar
-        self.yscrollbar=ttk.Scrollbar(wrapper1, orient="vertical", command=self.tabla.yview)
+        self.yscrollbar=ttk.Scrollbar(wrapper3, orient="vertical", command=self.tabla.yview)
         self.yscrollbar.grid(row=0,column=1,  sticky=N + S)
         self.tabla.configure(yscrollcommand=self.yscrollbar.set)
         
         #lleno la lista de elementos
-        query="SELECT Estado, Fecha, Cliente, Trabajo, Proveedor, Precio, Seña, Saldo, Id FROM Lista_de_Trabajos" 
-        self.cursor.execute(query)
-        rows = self.cursor.fetchall()
-        self.updateLista(rows)
+        self.limpiar()
         
         #------------------------------Seccion de busqueda
         
@@ -116,25 +113,27 @@ class listaDeTrabajos():
 
         self.lbl1 = Label(wrapper4, text="Estado")
         self.lbl1.grid(row=1, column=0, padx=5, pady=3)
-        self.ent1= Entry(wrapper4, textvariable=self.t1)
-        self.ent1.grid(row=1, column=1, pady=3, columnspan=3, sticky= W+E)
-        self.lbl1 = Label(wrapper4, text="P / EP / L / E")
-        self.lbl1.grid(row=1, column=4, padx=5, pady=3)
+        self.combo4= ttk.Combobox(wrapper4, textvariable=self.t1, state="readonly")
+        self.combo4.grid(row=1, column=1, pady=3, columnspan=3, sticky= W+E)
+        self.combo4["values"]=("PENDIENTE","EN PROCESO","LISTO","ENTREGADO")
         
         self.lbl1 = Label(wrapper4, text="Cliente")
         self.lbl1.grid(row=2, column=0, padx=5, pady=3)
-        self.ent1= Entry(wrapper4, textvariable=self.t2)
-        self.ent1.grid(row=2, column=1, pady=3, columnspan=3, sticky= W+E)
+        self.combo1= ttk.Combobox(wrapper4, textvariable=self.t2, state="readonly")
+        self.combo1.grid(row=2, column=1, pady=3, columnspan=3, sticky= W+E)
+        self.combo1["values"]=self.llenarCombo1()
         
         self.lbl2 = Label(wrapper4, text="Trabajo")
         self.lbl2.grid(row=3, column=0, padx=5, pady=3)
-        self.ent2= Entry(wrapper4, textvariable=self.t3)
-        self.ent2.grid(row=3, column=1, pady=3, columnspan=3, sticky= W+E)
+        self.combo3= ttk.Combobox(wrapper4, textvariable=self.t3)
+        self.combo3.grid(row=3, column=1, pady=3, columnspan=3, sticky= W+E)
+        self.combo3["values"]=self.llenarCombo3()
         
         self.lbl2 = Label(wrapper4, text="Enviado a:")
         self.lbl2.grid(row=4, column=0, padx=5, pady=3)
-        self.ent2= Entry(wrapper4, textvariable=self.t4)
-        self.ent2.grid(row=4, column=1, pady=3, columnspan=3, sticky= W+E)
+        self.combo2= ttk.Combobox(wrapper4, textvariable=self.t4, state="readonly")
+        self.combo2.grid(row=4, column=1, pady=3, columnspan=3, sticky= W+E)
+        self.combo2["values"]=self.llenarCombo2()
         
         self.lbl3 = Label(wrapper4, text="Precio")
         self.lbl3.grid(row=5, column=0, padx=5, pady=3)
@@ -190,6 +189,39 @@ class listaDeTrabajos():
     def listaProveedores(self):
         listProveedores = Toplevel()
         ListaDeProveedores(listProveedores)            
+
+    def llenarCombo1(self):
+        query = "SELECT nombre FROM Clientes ORDER BY nombre ASC"     
+        self.cursor.execute(query)
+        rows = self.cursor.fetchall()
+        lista=[]
+        for i in rows:
+            string = str(i)
+            new_string = string.lstrip("('")
+            lista.append(new_string[:-3])
+        return lista
+    
+    def llenarCombo2(self):
+        query = "SELECT nombre FROM Proveedores ORDER BY nombre ASC"     
+        self.cursor.execute(query)
+        rows = self.cursor.fetchall()
+        lista=[]
+        for i in rows:
+            string = str(i)
+            new_string = string.lstrip("('")
+            lista.append(new_string[:-3])
+        return lista
+    
+    def llenarCombo3(self):
+        query = "SELECT producto FROM Productos ORDER BY producto ASC"     
+        self.cursor.execute(query)
+        rows = self.cursor.fetchall()
+        lista=[]
+        for i in rows:
+            string = str(i)
+            new_string = string.lstrip("('")
+            lista.append(new_string[:-3])
+        return lista
     
     def limpiarc(self):
         self.t1.set('')
@@ -203,7 +235,7 @@ class listaDeTrabajos():
     def search(self):
         if self.seleccion.get()==1:
             q2=self.ent.get()
-            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Nombre = ?'
+            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Cliente = ?'
             self.cursor.execute(query, [q2])
             rows = self.cursor.fetchall()
             self.updateLista(rows)
@@ -232,11 +264,7 @@ class listaDeTrabajos():
             rows = self.cursor.fetchall()
             self.updateLista(rows)    
         else:    
-            q2=self.ent.get()
-            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Cliente = ?'
-            self.cursor.execute(query, [q2])
-            rows = self.cursor.fetchall()
-            self.updateLista(rows)
+            messagebox.showinfo(message="No ha seleccionado ningun parametro de busqueda", title="Confirmacion")
     
     def limpiar(self):
         query = "SELECT Estado, Fecha, Cliente, Trabajo, Proveedor, Precio, Seña, Saldo, Id FROM Lista_de_Trabajos"        
@@ -277,7 +305,6 @@ class listaDeTrabajos():
             
     def modificar(self):
         estado=self.t1.get()
-        fecha='Hoy'
         cliente=self.t2.get()
         trabajo=self.t3.get()
         proveedor=self.t4.get()
@@ -287,8 +314,8 @@ class listaDeTrabajos():
         if  len(estado) != 0 and len(cliente) !=0 and len(trabajo) !=0 and len(precio) !=0 and len(seña) !=0:  #valido que no le pasen valores vacios
             saldo= int(precio)-int(seña)
             if messagebox.askyesno("Confirmar Modificacion","Estas Seguro de Modificar este trabajo?"):
-                query = "UPDATE Lista_de_Trabajos SET Estado=?, Fecha=?, Cliente=?, Trabajo=?, Proveedor=?, Precio=?, Seña=?, Saldo=?, Id=? WHERE Id= ?" 
-                self.cursor.execute(query,(estado,fecha,cliente,trabajo,proveedor,precio,seña,saldo,id,id))
+                query = "UPDATE Lista_de_Trabajos SET Estado=?, Cliente=?, Trabajo=?, Proveedor=?, Precio=?, Seña=?, Saldo=?, Id=? WHERE Id= ?" 
+                self.cursor.execute(query,(estado,cliente,trabajo,proveedor,precio,seña,saldo,id,id))
                 self.conn.commit()
                 self.limpiar()
             else:
