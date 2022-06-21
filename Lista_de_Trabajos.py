@@ -121,19 +121,19 @@ class listaDeTrabajos():
         self.lbl1.grid(row=2, column=0, padx=5, pady=3)
         self.combo1= ttk.Combobox(wrapper4, textvariable=self.t2, state="readonly")
         self.combo1.grid(row=2, column=1, pady=3, columnspan=3, sticky= W+E)
-        self.combo1["values"]=self.llenarCombo1()
+        self.llenarCombo1()
         
         self.lbl2 = Label(wrapper4, text="Trabajo")
         self.lbl2.grid(row=3, column=0, padx=5, pady=3)
         self.combo3= ttk.Combobox(wrapper4, textvariable=self.t3)
         self.combo3.grid(row=3, column=1, pady=3, columnspan=3, sticky= W+E)
-        self.combo3["values"]=self.llenarCombo3()
+        self.llenarCombo3()
         
         self.lbl2 = Label(wrapper4, text="Enviado a:")
         self.lbl2.grid(row=4, column=0, padx=5, pady=3)
         self.combo2= ttk.Combobox(wrapper4, textvariable=self.t4, state="readonly")
         self.combo2.grid(row=4, column=1, pady=3, columnspan=3, sticky= W+E)
-        self.combo2["values"]=self.llenarCombo2()
+        self.llenarCombo2()
         
         self.lbl3 = Label(wrapper4, text="Precio")
         self.lbl3.grid(row=5, column=0, padx=5, pady=3)
@@ -158,13 +158,19 @@ class listaDeTrabajos():
         self.lim_btn.grid(row=4, column=6, padx=5, pady=3)
         
         self.listProd_btn=Button(wrapper5, text="Ver Lista de Productos", command= self.listaProductos)
-        self.listProd_btn.grid(row=0, column=0, padx=50, pady=70)
+        self.listProd_btn.grid(row=0, column=0, padx=50, pady=30)
+        self.actProd_btn=Button(wrapper5, text="Actualizar", command= self.llenarCombo3)
+        self.actProd_btn.grid(row=1, column=0, padx=50, pady=30)
         
         self.listClie_btn=Button(wrapper6, text="Ver Lista de Clientes", command= self.listaClientes)
-        self.listClie_btn.grid(row=0, column=0, padx=50, pady=70)
+        self.listClie_btn.grid(row=0, column=0, padx=50, pady=30)
+        self.actClie_btn=Button(wrapper6, text="Actualizar", command= self.llenarCombo1)
+        self.actClie_btn.grid(row=1, column=0, padx=50, pady=30)
         
         self.listPro_btn=Button(wrapper7, text="Ver Lista de Proveedores", command= self.listaProveedores)
-        self.listPro_btn.grid(row=0, column=0, padx=50, pady=70)
+        self.listPro_btn.grid(row=0, column=0, padx=50, pady=30)
+        self.actPro_btn=Button(wrapper7, text="Actualizar", command= self.llenarCombo2)
+        self.actPro_btn.grid(row=1, column=0, padx=50, pady=30)
  
         
 #---------------------------METODOS------------------------        
@@ -199,7 +205,7 @@ class listaDeTrabajos():
             string = str(i)
             new_string = string.lstrip("('")
             lista.append(new_string[:-3])
-        return lista
+        self.combo1["values"]=lista
     
     def llenarCombo2(self):
         query = "SELECT nombre FROM Proveedores ORDER BY nombre ASC"     
@@ -210,7 +216,7 @@ class listaDeTrabajos():
             string = str(i)
             new_string = string.lstrip("('")
             lista.append(new_string[:-3])
-        return lista
+        self.combo2["values"]=lista
     
     def llenarCombo3(self):
         query = "SELECT producto FROM Productos ORDER BY producto ASC"     
@@ -221,7 +227,7 @@ class listaDeTrabajos():
             string = str(i)
             new_string = string.lstrip("('")
             lista.append(new_string[:-3])
-        return lista
+        self.combo3["values"]=lista
     
     def limpiarc(self):
         self.t1.set('')
