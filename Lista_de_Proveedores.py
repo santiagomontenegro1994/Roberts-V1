@@ -5,16 +5,21 @@ import sqlite3
 
 class ListaDeProveedores():
     
-    db_nombre = 'database.db' 
+    db_nombre = 'database.db'
+    with sqlite3.connect(db_nombre) as conn:
+            cursor = conn.cursor() 
     
     def __init__(self,window):
         self.wind=window
         self.wind.title("Lista de Proveedores")
-        self.wind.geometry('600x400')
+        
+        self.seleccion=tk.IntVar()
         
         #creando contenedor
         frame=LabelFrame(self.wind, text = 'Registra un nuevo Proveedor')
         frame.grid(row=0, column=0, columnspan=3, pady = 20)
+        frame1=LabelFrame(self.wind, text = 'Busqueda')
+        frame1.grid(row=1, column=0, columnspan=3, pady = 20)
         
         #nombre cliente
         Label(frame, text='Nombre: ' ).grid(row=1, column=0)
@@ -39,19 +44,80 @@ class ListaDeProveedores():
         self.mensaje = Label(self.wind,text = '', fg = 'red')
         self.mensaje.grid(row=3, column=0, columnspan=3, sticky=W + E)
         
+        #------------------------------Seccion de busqueda
+        
+        self.ent = Entry(frame1)
+        self.ent.grid(row=0, column=0,columnspan=2, sticky= W+E)
+        self.btn = Button(frame1, text="busqueda", command=self.search)
+        self.btn.grid(row=0, column=2)
+        self.lbtn = Button(frame1, text="Limpiar",command=self.get_proveedores)
+        self.lbtn.grid(row=0, column=3)
+        self.rbotonTrabajo = tk.Radiobutton(frame1, text="Nombre", variable=self.seleccion, value=1, command=self.search)
+        self.rbotonTrabajo.grid(row=1, column=0, padx=15, pady=5)
+        self.rbotonTrabajo = tk.Radiobutton(frame1, text="Telefono", variable=self.seleccion, value=2, command=self.search)
+        self.rbotonTrabajo.grid(row=1, column=1, padx=15, pady=5) 
+        self.rbotonFecha = tk.Radiobutton(frame1, text="Cuit", variable=self.seleccion, value=3, command=self.search)
+        self.rbotonFecha.grid(row=1, column=2, padx=15, pady=5)
+
+        
         #tabla de proveedores
         self.tabla = ttk.Treeview(self.wind, columns=("tel", "cuit"))
-        self.tabla.grid(row=6, column=0, columnspan=3)
+        self.tabla.grid(row=8, column=0, columnspan=3)
         self.tabla.heading('#0', text= 'Nombre', anchor=CENTER)
         self.tabla.heading('#1', text= 'Telefono', anchor=CENTER)
         self.tabla.heading('#2', text= 'Cuit', anchor=CENTER)
         
+        #Agregando la scrollbar
+        self.yscrollbar=ttk.Scrollbar(self.wind, orient="vertical", command=self.tabla.yview)
+        self.yscrollbar.grid(row=8,column=4,  sticky=N + S)
+        self.tabla.configure(yscrollcommand=self.yscrollbar.set)
+        
         #boton para eliminar y Editar
-        ttk.Button(self.wind,text = 'Eliminar', command = self.delete_proveedor).grid(row=5, column=0, sticky=W + E)
-        ttk.Button(self.wind, text = 'Editar', command= self.edit_proveedor).grid(row=5, column=1, sticky=W + E)
+        ttk.Button(self.wind,text = 'Eliminar', command = self.delete_proveedor).grid(row=7, column=0, sticky=W + E)
+        ttk.Button(self.wind, text = 'Editar', command= self.edit_proveedor).grid(row=7, column=1, sticky=W + E)
         
         #llenando las filas de la tabla 
         self.get_proveedores()
+     
+    def search(self):
+        if self.seleccion.get()==1:
+            q2=self.ent.get().upper()
+            #limpiando la tabla
+            records = self.tabla.get_children()
+            for element in records:
+                self.tabla.delete(element)
+            #consultando los datos    
+            query = 'SELECT * FROM Proveedores WHERE nombre = ?'
+            db_rows=self.run_query(query,[q2])
+            #rellenando los datos
+            for row in db_rows:
+                self.tabla.insert('', 0, text = row[1], value = (row[2], row[3])) 
+        elif self.seleccion.get()==2:
+            q2=self.ent.get().upper()
+            #limpiando la tabla
+            records = self.tabla.get_children()
+            for element in records:
+                self.tabla.delete(element)
+            #consultando los datos    
+            query = 'SELECT * FROM Proveedores WHERE telefono = ?'
+            db_rows=self.run_query(query,[q2])
+            #rellenando los datos
+            for row in db_rows:
+                self.tabla.insert('', 0, text = row[1], value = (row[2], row[3])) 
+        elif self.seleccion.get()==3:
+            q2=self.ent.get().upper()
+            #limpiando la tabla
+            records = self.tabla.get_children()
+            for element in records:
+                self.tabla.delete(element)
+            #consultando los datos    
+            query = 'SELECT * FROM Proveedores WHERE cuit = ?'
+            db_rows=self.run_query(query,[q2])
+            #rellenando los datos
+            for row in db_rows:
+                self.tabla.insert('', 0, text = row[1], value = (row[2], row[3]))    
+        else:    
+            self.mensaje['text'] = 'Nombre y Telefono son requeridos'    
         
     def run_query(self, query, parameters =()):
         with sqlite3.connect(self.db_nombre) as conn:
@@ -59,7 +125,7 @@ class ListaDeProveedores():
             result = cursor.execute(query, parameters)
             conn.commit()
         return result        
-
+            
     def get_proveedores(self):
         #limpiando la tabla
         records = self.tabla.get_children()

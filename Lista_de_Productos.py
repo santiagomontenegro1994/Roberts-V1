@@ -5,15 +5,21 @@ import sqlite3
 
 class listaDeProductos():
     
-    db_nombre = 'database.db' 
+    db_nombre = 'database.db'
+    with sqlite3.connect(db_nombre) as conn:
+            cursor = conn.cursor() 
     
     def __init__(self,window):
         self.wind = window
         self.wind.title("Lista de Productos")
         
+        self.seleccion=tk.IntVar()
+        
         #creando contenedor
         frame=LabelFrame(self.wind, text = 'Registra un nuevo Producto')
         frame.grid(row=0, column=0, columnspan=3, pady = 20)
+        frame1=LabelFrame(self.wind, text = 'Busqueda')
+        frame1.grid(row=1, column=0, columnspan=3, pady = 20)
         
         #producto
         Label(frame, text='Producto: ' ).grid(row=1, column=0)
@@ -33,11 +39,29 @@ class listaDeProductos():
         self.mensaje = Label(self.wind, text = '', fg = 'red')
         self.mensaje.grid(row=3, column=0, columnspan=3, sticky=W + E)
         
+        #------------------------------Seccion de busqueda
+        
+        self.ent = Entry(frame1)
+        self.ent.grid(row=0, column=0,columnspan=2, sticky= W+E)
+        self.btn = Button(frame1, text="busqueda", command=self.search)
+        self.btn.grid(row=0, column=2)
+        self.lbtn = Button(frame1, text="Limpiar",command=self.get_productos)
+        self.lbtn.grid(row=0, column=3)
+        self.rbotonTrabajo = tk.Radiobutton(frame1, text="Producto", variable=self.seleccion, value=1, command=self.search)
+        self.rbotonTrabajo.grid(row=1, column=0, padx=15, pady=5)
+        self.rbotonTrabajo = tk.Radiobutton(frame1, text="Precio", variable=self.seleccion, value=2, command=self.search)
+        self.rbotonTrabajo.grid(row=1, column=1, padx=15, pady=5) 
+        
         #tabla de productos
         self.tabla = ttk.Treeview(self.wind, columns=("Precio"))
         self.tabla.grid(row=6, column=0, columnspan=3)
         self.tabla.heading('#0', text= 'Producto', anchor=CENTER)
         self.tabla.heading('#1', text= 'Precio', anchor=CENTER)
+        
+        #Agregando la scrollbar
+        self.yscrollbar=ttk.Scrollbar(self.wind, orient="vertical", command=self.tabla.yview)
+        self.yscrollbar.grid(row=6,column=4,  sticky=N + S)
+        self.tabla.configure(yscrollcommand=self.yscrollbar.set)
         
         #boton para eliminar y Editar
         ttk.Button(self.wind, text = 'Eliminar', command=self.delete_productos).grid(row=5, column=0, sticky=W + E)
@@ -66,6 +90,34 @@ class listaDeProductos():
         #rellenando los datos
         for row in db_rows:
             self.tabla.insert('', 0, text = row[1], value = row[2])
+
+    def search(self):
+        if self.seleccion.get()==1:
+            q2=self.ent.get().upper()
+            #limpiando la tabla
+            records = self.tabla.get_children()
+            for element in records:
+                self.tabla.delete(element)
+            #consultando los datos    
+            query = 'SELECT * FROM Productos WHERE producto = ?'
+            db_rows=self.run_query(query,[q2])
+            #rellenando los datos
+            for row in db_rows:
+                self.tabla.insert('', 0, text = row[1], value = (row[2])) 
+        elif self.seleccion.get()==2:
+            q2=self.ent.get().upper()
+            #limpiando la tabla
+            records = self.tabla.get_children()
+            for element in records:
+                self.tabla.delete(element)
+            #consultando los datos    
+            query = 'SELECT * FROM Productos WHERE precio = ?'
+            db_rows=self.run_query(query,[q2])
+            #rellenando los datos
+            for row in db_rows:
+                self.tabla.insert('', 0, text = row[1], value = (row[2]))     
+        else:    
+            self.mensaje['text'] = 'Parametros de busqueda son requeridos'
 
     def validacion(self): #valida para que no pase un dato vacio
         return len(self.producto.get()) != 0 and len(self.precio.get()) !=0 
