@@ -73,7 +73,7 @@ class listaDeProductos():
     def add_productos(self):  #metodo para agregar clientes
         if self.validacion():
             query = 'INSERT INTO Productos VALUES(NULL, ?, ?)'
-            parameters = (self.producto.get(), self.precio.get())
+            parameters = (self.producto.get().upper(), self.precio.get().upper())
             self.run_query(query, parameters)
             self.mensaje['text'] = 'Producto: {} agregado'.format(self.producto.get())
             self.producto.delete(0,END)
@@ -132,7 +132,7 @@ class listaDeProductos():
     def edit_records(self, nuevo_producto, old_producto, nuevo_precio, old_precio):
         if  len(nuevo_producto) != 0 and len(nuevo_precio) !=0:  #valido que no le pasen valores vacios
             query= 'UPDATE Productos set producto = ?, precio = ? WHERE producto = ? AND precio = ?'
-            parameters = (nuevo_producto, nuevo_precio, old_producto, old_precio)
+            parameters = (nuevo_producto.upper(), nuevo_precio, old_producto, old_precio)
             self.run_query(query, parameters) #le paso la consulta
             self.ventana_editar.destroy() #cierro la ventana editar
             self.mensaje['text'] = 'Datos del producto {} modificados correctamente'.format(nuevo_producto)

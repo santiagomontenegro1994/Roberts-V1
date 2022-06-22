@@ -78,7 +78,7 @@ class ListaDeProveedores():
     def add_proveedor(self):  #metodo para agregar clientes
         if self.validacion():
             query = 'INSERT INTO Proveedores VALUES(NULL, ?, ?, ?)'
-            parameters = (self.nombre.get(), self.telefono.get(), self.cuit.get())
+            parameters = (self.nombre.get().upper(), self.telefono.get().upper(), self.cuit.get())
             self.run_query(query, parameters)
             self.mensaje['text'] = 'Proveedor: {} agregado'.format(self.nombre.get())
             self.nombre.delete(0,END)
@@ -147,7 +147,7 @@ class ListaDeProveedores():
     def edit_records(self, nuevo_nombre, old_nombre, nuevo_telefono, old_telefono, nuevo_cuit,):
         if  len(nuevo_nombre) != 0 and len(nuevo_telefono) !=0:  #valido que no le pasen valores vacios
             query= 'UPDATE Proveedores set nombre = ?, telefono = ?, cuit = ? WHERE nombre = ? AND telefono = ?'
-            parameters = (nuevo_nombre, nuevo_telefono, nuevo_cuit, old_nombre, old_telefono)
+            parameters = (nuevo_nombre.upper(), nuevo_telefono.upper(), nuevo_cuit, old_nombre, old_telefono)
             self.run_query(query, parameters) #le paso la consulta
             self.ventana_editar.destroy() #cierro la ventana editar
             self.mensaje['text'] = 'Datos del proveedor {} modificados correctamente'.format(nuevo_nombre)

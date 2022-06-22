@@ -240,31 +240,31 @@ class listaDeTrabajos():
         
     def search(self):
         if self.seleccion.get()==1:
-            q2=self.ent.get()
+            q2=self.ent.get().upper()
             query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Cliente = ?'
             self.cursor.execute(query, [q2])
             rows = self.cursor.fetchall()
             self.updateLista(rows)
         elif self.seleccion.get()==2:
-            q2=self.ent.get()
+            q2=self.ent.get().upper()
             query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Trabajo = ?'
             self.cursor.execute(query, [q2])
             rows = self.cursor.fetchall()
             self.updateLista(rows)
         elif self.seleccion.get()==3:
-            q2=self.ent.get()
+            q2=self.ent.get().upper()
             query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Fecha = ?'
             self.cursor.execute(query, [q2])
             rows = self.cursor.fetchall()
             self.updateLista(rows)
         elif self.seleccion.get()==4:
-            q2=self.ent.get()
+            q2=self.ent.get().upper()
             query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Estado = ?'
             self.cursor.execute(query, [q2])
             rows = self.cursor.fetchall()
             self.updateLista(rows)
         elif self.seleccion.get()==5:
-            q2=self.ent.get()
+            q2=self.ent.get().upper()
             query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Id = ?'
             self.cursor.execute(query, [q2])
             rows = self.cursor.fetchall()
@@ -306,6 +306,7 @@ class listaDeTrabajos():
             self.conn.commit()
             messagebox.showinfo(message="Trabajo Agregado Correctamente!", title="Confirmacion")
             self.limpiar()
+            self.limpiarc()
         else:
             messagebox.showinfo(message="No se puede agregra trabajo con datos vacios", title="Aviso!")
             
@@ -324,6 +325,7 @@ class listaDeTrabajos():
                 self.cursor.execute(query,(estado,cliente,trabajo,proveedor,precio,seña,saldo,id,id))
                 self.conn.commit()
                 self.limpiar()
+                self.limpiarc()
             else:
                 return True    
         else:
@@ -333,9 +335,10 @@ class listaDeTrabajos():
         idLista= self.t7.get()
         if messagebox.askyesno("Confirma que quiere eliminar?", "Estas seguro de eliminar este Trabajo?"): # Mensaje para confirmar eliminacion
             query='DELETE FROM Lista_de_Trabajos WHERE Id = ?'
-            self.cursor.execute(query,(idLista))
+            self.cursor.execute(query,[idLista])
             self.conn.commit()
             self.limpiar()
+            self.limpiarc()
         else:
             return True       
         
