@@ -8,7 +8,6 @@ import sqlite3
 class ListaDeClientes():
     
     db_nombre = 'database.db'
-    db_nombre = 'database.db'
     with sqlite3.connect(db_nombre) as conn:
             cursor = conn.cursor() 
     

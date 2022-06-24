@@ -117,7 +117,7 @@ class ListaDeProveedores():
             for row in db_rows:
                 self.tabla.insert('', 0, text = row[1], value = (row[2], row[3]))    
         else:    
-            self.mensaje['text'] = 'Nombre y Telefono son requeridos'    
+            self.mensaje['text'] = 'Parametros de busqueda son requeridos'    
         
     def run_query(self, query, parameters =()):
         with sqlite3.connect(self.db_nombre) as conn:
