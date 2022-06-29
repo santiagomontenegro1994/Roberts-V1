@@ -7,6 +7,10 @@ from datetime import datetime
 from Lista_de_Clientes import ListaDeClientes
 from Lista_de_Proveedores import ListaDeProveedores
 from Lista_de_Productos import listaDeProductos
+import Lista_de_Clientes
+import Lista_de_Productos
+import Lista_de_Proveedores
+import Lista_de_Trabajos
 
 
 
@@ -240,20 +244,20 @@ class listaDeTrabajos():
         
     def search(self):
         if self.seleccion.get()==1:
-            q2=self.ent.get().upper()
-            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Cliente = ?'
-            self.cursor.execute(query, [q2])
+            q2='%'+self.ent.get().upper()+'%'
+            query= "SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Cliente LIKE ?"
+            self.cursor.execute(query,[q2])
             rows = self.cursor.fetchall()
             self.updateLista(rows)
         elif self.seleccion.get()==2:
-            q2=self.ent.get().upper()
-            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Trabajo = ?'
+            q2='%'+self.ent.get().upper()+'%'
+            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Trabajo LIKE ?'
             self.cursor.execute(query, [q2])
             rows = self.cursor.fetchall()
             self.updateLista(rows)
         elif self.seleccion.get()==3:
-            q2=self.ent.get().upper()
-            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Fecha = ?'
+            q2='%'+self.ent.get().upper()+'%'
+            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Fecha LIKE ?'
             self.cursor.execute(query, [q2])
             rows = self.cursor.fetchall()
             self.updateLista(rows)
@@ -341,7 +345,8 @@ class listaDeTrabajos():
             self.limpiarc()
         else:
             return True       
-        
-window = Tk()
-programa = listaDeTrabajos(window)
-window.mainloop()        
+
+if __name__ =="__main__":        
+    window = Tk()
+    programa = listaDeTrabajos(window)
+    window.mainloop()        

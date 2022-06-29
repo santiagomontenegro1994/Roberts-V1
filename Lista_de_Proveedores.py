@@ -81,25 +81,25 @@ class ListaDeProveedores():
      
     def search(self):
         if self.seleccion.get()==1:
-            q2=self.ent.get().upper()
+            q2='%'+self.ent.get().upper()+'%'
             #limpiando la tabla
             records = self.tabla.get_children()
             for element in records:
                 self.tabla.delete(element)
             #consultando los datos    
-            query = 'SELECT * FROM Proveedores WHERE nombre = ?'
+            query = 'SELECT * FROM Proveedores WHERE nombre LIKE ?'
             db_rows=self.run_query(query,[q2])
             #rellenando los datos
             for row in db_rows:
                 self.tabla.insert('', 0, text = row[1], value = (row[2], row[3])) 
         elif self.seleccion.get()==2:
-            q2=self.ent.get().upper()
+            q2='%'+self.ent.get().upper()+'%'
             #limpiando la tabla
             records = self.tabla.get_children()
             for element in records:
                 self.tabla.delete(element)
             #consultando los datos    
-            query = 'SELECT * FROM Proveedores WHERE telefono = ?'
+            query = 'SELECT * FROM Proveedores WHERE telefono LIKE ?'
             db_rows=self.run_query(query,[q2])
             #rellenando los datos
             for row in db_rows:

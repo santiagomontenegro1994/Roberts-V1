@@ -93,13 +93,13 @@ class listaDeProductos():
 
     def search(self):
         if self.seleccion.get()==1:
-            q2=self.ent.get().upper()
+            q2='%'+self.ent.get().upper()+'%'
             #limpiando la tabla
             records = self.tabla.get_children()
             for element in records:
                 self.tabla.delete(element)
             #consultando los datos    
-            query = 'SELECT * FROM Productos WHERE producto = ?'
+            query = 'SELECT * FROM Productos WHERE producto LIKE ?'
             db_rows=self.run_query(query,[q2])
             #rellenando los datos
             for row in db_rows:
