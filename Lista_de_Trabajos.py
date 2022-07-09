@@ -7,11 +7,6 @@ from datetime import datetime
 from Lista_de_Clientes import ListaDeClientes
 from Lista_de_Proveedores import ListaDeProveedores
 from Lista_de_Productos import listaDeProductos
-import Lista_de_Clientes
-import Lista_de_Productos
-import Lista_de_Proveedores
-import Lista_de_Trabajos
-
 
 
 class listaDeTrabajos():
@@ -245,31 +240,31 @@ class listaDeTrabajos():
     def search(self):
         if self.seleccion.get()==1:
             q2='%'+self.ent.get().upper()+'%'
-            query= "SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Cliente LIKE ?"
+            query= "SELECT Estado, Fecha, Cliente, Trabajo, Proveedor, Precio, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Cliente LIKE ?"
             self.cursor.execute(query,[q2])
             rows = self.cursor.fetchall()
             self.updateLista(rows)
         elif self.seleccion.get()==2:
             q2='%'+self.ent.get().upper()+'%'
-            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Trabajo LIKE ?'
+            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Proveedor, Precio, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Trabajo LIKE ?'
             self.cursor.execute(query, [q2])
             rows = self.cursor.fetchall()
             self.updateLista(rows)
         elif self.seleccion.get()==3:
             q2='%'+self.ent.get().upper()+'%'
-            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Fecha LIKE ?'
+            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Proveedor, Precio, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Fecha LIKE ?'
             self.cursor.execute(query, [q2])
             rows = self.cursor.fetchall()
             self.updateLista(rows)
         elif self.seleccion.get()==4:
             q2=self.ent.get().upper()
-            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Estado = ?'
+            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Proveedor, Precio, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Estado = ?'
             self.cursor.execute(query, [q2])
             rows = self.cursor.fetchall()
             self.updateLista(rows)
         elif self.seleccion.get()==5:
             q2=self.ent.get().upper()
-            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Precio, Proveedor, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Id = ?'
+            query= 'SELECT Estado, Fecha, Cliente, Trabajo, Proveedor, Precio, Seña, Saldo, Id FROM Lista_de_Trabajos WHERE Id = ?'
             self.cursor.execute(query, [q2])
             rows = self.cursor.fetchall()
             self.updateLista(rows)    
