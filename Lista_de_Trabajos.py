@@ -114,7 +114,7 @@ class listaDeTrabajos():
         self.lbl1.grid(row=1, column=0, padx=5, pady=3)
         self.combo4= ttk.Combobox(wrapper4, textvariable=self.t1, state="readonly")
         self.combo4.grid(row=1, column=1, pady=3, columnspan=3, sticky= W+E)
-        self.combo4["values"]=("PENDIENTE","EN PROCESO","LISTO","ENTREGADO")
+        self.combo4["values"]=("PENDIENTE","DISEÑO EMPEZADO","ENVIADO","LISTO","ENTREGADO")
         
         self.lbl1 = Label(wrapper4, text="Cliente")
         self.lbl1.grid(row=2, column=0, padx=5, pady=3)
@@ -293,7 +293,7 @@ class listaDeTrabajos():
         fecha=datetime.now()
         fecha=fecha.strftime('%d-%m-%Y')
         cliente=self.t2.get()
-        trabajo=self.t3.get()
+        trabajo=self.t3.get().upper()
         proveedor=self.t4.get()
         precio=self.t5.get()
         seña=self.t6.get()
