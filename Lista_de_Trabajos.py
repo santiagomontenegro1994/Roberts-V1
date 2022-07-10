@@ -4,6 +4,9 @@ from tkinter import ttk
 from tkinter import messagebox
 import sqlite3
 from datetime import datetime
+from webbrowser import BackgroundBrowser
+
+from colorama import Back
 from Lista_de_Clientes import ListaDeClientes
 from Lista_de_Proveedores import ListaDeProveedores
 from Lista_de_Productos import listaDeProductos
@@ -19,7 +22,6 @@ class listaDeTrabajos():
     def __init__(self,window):
         self.wind=window
         self.wind.title("Lista de Trabajos")
-        self.wind.geometry("1200x800")
         
         self.t1=tk.StringVar()
         self.t2=tk.StringVar()
@@ -29,15 +31,20 @@ class listaDeTrabajos():
         self.t6=tk.StringVar()
         self.t7=tk.StringVar()
         self.seleccion=tk.IntVar()
+        bgcolor='#D3A7D4'
+        bgcolor1='#D3A7D4'
+        bgbuttoncolor='#99339C'
+        
+        self.wind.configure(bg=bgcolor)
         
         #Creando el contenedor
-        wrapper1 = LabelFrame(window, text="Lista de Trabajos")
-        wrapper2 = LabelFrame(window, text="Busqueda")
-        wrapper3 = LabelFrame(window)
-        wrapper4 = LabelFrame(wrapper1, text="Cargar Lista de Trabajos")
-        wrapper5 = LabelFrame(wrapper1, text="Cargar Lista de Productos")
-        wrapper6 = LabelFrame(wrapper1, text="Cargar Lista de Clientes")
-        wrapper7 = LabelFrame(wrapper1, text="Cargar Lista de Proveedores")
+        wrapper1 = LabelFrame(window,bg=bgcolor, text="LISTA DE TRABAJOS")
+        wrapper2 = LabelFrame(window,bg=bgcolor, text="BUSQUEDA")
+        wrapper3 = LabelFrame(window,bg=bgcolor)
+        wrapper4 = LabelFrame(wrapper1,bg=bgcolor, text="Cargar Lista de Trabajos")
+        wrapper5 = LabelFrame(wrapper1,bg=bgcolor, text="Cargar Lista de Productos")
+        wrapper6 = LabelFrame(wrapper1,bg=bgcolor, text="Cargar Lista de Clientes")
+        wrapper7 = LabelFrame(wrapper1,bg=bgcolor, text="Cargar Lista de Proveedores")
         
         
         wrapper1.grid(row=0, column=0, padx=20, pady=10)
@@ -53,18 +60,20 @@ class listaDeTrabajos():
         #Creando el treeview
         self.tabla = ttk.Treeview(wrapper3, columns=(1,2,3,4,5,6,7,8,9), show="headings")
         self.style=ttk.Style(self.tabla)
-        self.style.configure('Treeview', rowheight=25)
-        
+        self.style.theme_use('clam')
+        self.style.configure('Treeview', rowheight=20)
+        self.style.configure('Treeview.Heading',font=('Sans','8','bold'),foreground="#FFFFFF", background=bgbuttoncolor)
+      
         self.tabla.grid(row=0,column=0)
-        self.tabla.heading(1, text="Estado")
-        self.tabla.heading(2, text="Fecha")
-        self.tabla.heading(3, text="Cliente")
-        self.tabla.heading(4, text="Trabajo")
-        self.tabla.heading(5, text="Enviado a")
-        self.tabla.heading(6, text="Precio")
-        self.tabla.heading(7, text="Seña")
-        self.tabla.heading(8, text="Saldo")
-        self.tabla.heading(9, text="Id")
+        self.tabla.heading(1, text="ESTADO")
+        self.tabla.heading(2, text="FECHA")
+        self.tabla.heading(3, text="CLIENTE")
+        self.tabla.heading(4, text="TRABAJO")
+        self.tabla.heading(5, text="ENVIADO A")
+        self.tabla.heading(6, text="PRECIO")
+        self.tabla.heading(7, text="SEÑA")
+        self.tabla.heading(8, text="SALDO")
+        self.tabla.heading(9, text="ID")
         
         #dando el ancho de las columnas
         self.tabla.column('#1', width=90, anchor='c')
@@ -89,87 +98,91 @@ class listaDeTrabajos():
         
         #------------------------------Seccion de busqueda
         
-        self.lbl = Label(wrapper2, text="Busqueda")
+        self.lbl = Label(wrapper2, text="Busqueda",bg=bgcolor)
         self.lbl.grid(row=0, column=0)
         self.ent = Entry(wrapper2)
         self.ent.grid(row=0, column=1)
-        self.btn = Button(wrapper2, text="busqueda", command=self.search)
-        self.btn.grid(row=0, column=2)
-        self.lbtn = Button(wrapper2, text="Limpiar",command=self.limpiar)
-        self.lbtn.grid(row=0, column=3)
-        self.rbotonTrabajo = tk.Radiobutton(wrapper2, text="Nombre", variable=self.seleccion, value=1, command=self.search)
+        self.btn = Button(wrapper2, text="BUSCAR",font=('Sans','8','bold'),fg="#FFFFFF" ,background=bgbuttoncolor, borderwidth=3 , command=self.search)
+        self.btn.grid(row=0, column=2, padx=5)
+        self.lbtn = Button(wrapper2, text="LIMPIAR",font=('Sans','8','bold'),fg="#FFFFFF" ,background=bgbuttoncolor, borderwidth=3 ,command=self.limpiar)
+        self.lbtn.grid(row=0, column=3, padx=5)
+        self.rbotonTrabajo = tk.Radiobutton(wrapper2, text="Nombre", bg=bgcolor, variable=self.seleccion, value=1, command=self.search)
         self.rbotonTrabajo.grid(row=0, column=4, padx=15, pady=5)
-        self.rbotonTrabajo = tk.Radiobutton(wrapper2, text="Trabajo", variable=self.seleccion, value=2, command=self.search)
+        self.rbotonTrabajo = tk.Radiobutton(wrapper2, text="Trabajo", bg=bgcolor, variable=self.seleccion, value=2, command=self.search)
         self.rbotonTrabajo.grid(row=0, column=5, padx=15, pady=5) 
-        self.rbotonFecha = tk.Radiobutton(wrapper2, text="Fecha", variable=self.seleccion, value=3, command=self.search)
+        self.rbotonFecha = tk.Radiobutton(wrapper2, text="Fecha", bg=bgcolor, variable=self.seleccion, value=3, command=self.search)
         self.rbotonFecha.grid(row=0, column=6, padx=15, pady=5)
-        self.rbotonEstado = tk.Radiobutton(wrapper2, text="Estado", variable=self.seleccion, value=4, command=self.search)
+        self.rbotonEstado = tk.Radiobutton(wrapper2, text="Estado", bg=bgcolor, variable=self.seleccion, value=4, command=self.search)
         self.rbotonEstado.grid(row=0, column=7, padx=15, pady=5)
-        self.rbotonId = tk.Radiobutton(wrapper2, text="Id", variable=self.seleccion, value=5, command=self.search)
+        self.rbotonId = tk.Radiobutton(wrapper2, text="Id", bg=bgcolor, variable=self.seleccion, value=5, command=self.search)
         self.rbotonId.grid(row=0, column=8, padx=15, pady=5)
         
         #------------Seccion de carga y modificacion de datos                     
 
-        self.lbl1 = Label(wrapper4, text="Estado")
+        self.lbl1 = Label(wrapper4, text="Estado",bg=bgcolor)
         self.lbl1.grid(row=1, column=0, padx=5, pady=3)
         self.combo4= ttk.Combobox(wrapper4, textvariable=self.t1, state="readonly")
         self.combo4.grid(row=1, column=1, pady=3, columnspan=3, sticky= W+E)
         self.combo4["values"]=("PENDIENTE","DISEÑO EMPEZADO","ENVIADO","LISTO","ENTREGADO")
         
-        self.lbl1 = Label(wrapper4, text="Cliente")
+        self.lbl1 = Label(wrapper4, text="Cliente",bg=bgcolor)
         self.lbl1.grid(row=2, column=0, padx=5, pady=3)
         self.combo1= ttk.Combobox(wrapper4, textvariable=self.t2, state="readonly")
         self.combo1.grid(row=2, column=1, pady=3, columnspan=3, sticky= W+E)
         self.llenarCombo1()
         
-        self.lbl2 = Label(wrapper4, text="Trabajo")
+        self.lbl2 = Label(wrapper4, text="Trabajo",bg=bgcolor)
         self.lbl2.grid(row=3, column=0, padx=5, pady=3)
         self.combo3= ttk.Combobox(wrapper4, textvariable=self.t3)
         self.combo3.grid(row=3, column=1, pady=3, columnspan=3, sticky= W+E)
         self.llenarCombo3()
         
-        self.lbl2 = Label(wrapper4, text="Enviado a:")
+        self.lbl2 = Label(wrapper4, text="Enviado a:",bg=bgcolor)
         self.lbl2.grid(row=4, column=0, padx=5, pady=3)
         self.combo2= ttk.Combobox(wrapper4, textvariable=self.t4, state="readonly")
         self.combo2.grid(row=4, column=1, pady=3, columnspan=3, sticky= W+E)
         self.llenarCombo2()
         
-        self.lbl3 = Label(wrapper4, text="Precio")
+        self.lbl3 = Label(wrapper4, text="Precio",bg=bgcolor)
         self.lbl3.grid(row=5, column=0, padx=5, pady=3)
         self.ent3= Entry(wrapper4, textvariable=self.t5)
         self.ent3.grid(row=5, column=1, pady=3, columnspan=3, sticky= W+E)
         
-        self.lbl3 = Label(wrapper4, text="Seña")
+        self.lbl3 = Label(wrapper4, text="Seña",bg=bgcolor)
         self.lbl3.grid(row=6, column=0, padx=5, pady=3)
         self.ent3= Entry(wrapper4, textvariable=self.t6)
         self.ent3.grid(row=6, column=1, pady=3, columnspan=3, sticky= W+E)
         
-        self.ag_btn=Button(wrapper4, text= "Agregar", command= self.agregar)
+        self.ag_btn=Button(wrapper4, text= " AGREGAR ",font=('Sans','8','bold'),fg="#FFFFFF" ,background=bgbuttoncolor, borderwidth=3 , command= self.agregar)
         self.ag_btn.grid(row=1, column=6, padx=5, pady=3)
         
-        self.mod_btn=Button(wrapper4, text="Modificar", command=self.modificar)
+        self.mod_btn=Button(wrapper4, text="MODIFICAR",font=('Sans','8','bold'),fg="#FFFFFF" ,background=bgbuttoncolor, borderwidth=3 , command=self.modificar)
         self.mod_btn.grid(row=2, column=6, padx=5, pady=3)
         
-        self.el_btn=Button(wrapper4, text="Eliminar", command= self.eliminar)
+        self.el_btn=Button(wrapper4, text=" ELIMINAR ",font=('Sans','8','bold'),fg="#FFFFFF" ,background=bgbuttoncolor, borderwidth=3 , command= self.eliminar)
         self.el_btn.grid(row=3, column=6, padx=5, pady=3)
         
-        self.lim_btn=Button(wrapper4, text="Limpiar", command= self.limpiarc)
+        self.lim_btn=Button(wrapper4, text="  LIMPIAR  ",font=('Sans','8','bold'),fg="#FFFFFF" ,background=bgbuttoncolor, borderwidth=3 , command= self.limpiarc)
         self.lim_btn.grid(row=4, column=6, padx=5, pady=3)
         
-        self.listProd_btn=Button(wrapper5, text="Ver Lista de Productos", command= self.listaProductos)
+        self.listProd_btn=Button(wrapper5, text="LISTA DE PRODUCTOS",font=('Sans','8','bold'),fg="#FFFFFF" ,background=bgbuttoncolor, borderwidth=3 , command= self.listaProductos)
         self.listProd_btn.grid(row=0, column=0, padx=50, pady=30)
-        self.actProd_btn=Button(wrapper5, text="Actualizar", command= self.llenarCombo3)
+        self.actProd_btn=Button(wrapper5, text="ACTUALIZAR",font=('Sans','8','bold'),fg="#FFFFFF" ,background=bgbuttoncolor, borderwidth=3 , command= self.llenarCombo3)
         self.actProd_btn.grid(row=1, column=0, padx=50, pady=30)
         
-        self.listClie_btn=Button(wrapper6, text="Ver Lista de Clientes", command= self.listaClientes)
+        self.listClie_btn=Button(wrapper6, text="LISTA DE CLIENTES",font=('Sans','8','bold'),fg="#FFFFFF" ,background=bgbuttoncolor, borderwidth=3 ,command= self.listaClientes)
         self.listClie_btn.grid(row=0, column=0, padx=50, pady=30)
-        self.actClie_btn=Button(wrapper6, text="Actualizar", command= self.llenarCombo1)
+        self.actClie_btn=Button(wrapper6, text="ACTUALIZAR",font=('Sans','8','bold'),fg="#FFFFFF" ,background=bgbuttoncolor, borderwidth=3 ,command= self.llenarCombo1)
         self.actClie_btn.grid(row=1, column=0, padx=50, pady=30)
         
-        self.listPro_btn=Button(wrapper7, text="Ver Lista de Proveedores", command= self.listaProveedores)
-        self.listPro_btn.grid(row=0, column=0, padx=50, pady=30)
-        self.actPro_btn=Button(wrapper7, text="Actualizar", command= self.llenarCombo2)
-        self.actPro_btn.grid(row=1, column=0, padx=50, pady=30)
+        self.listPro_btn=Button(wrapper7, text="LISTA PROVEEDORES",font=('Sans','8','bold'),fg="#FFFFFF" ,background=bgbuttoncolor,borderwidth=3 ,command= self.listaProveedores)
+        self.listPro_btn.grid(row=0, column=0, padx=50, pady=16)
+        self.listPro_btn=Button(wrapper7, text="TRABAJOS PENDIENTES",font=('Sans','8','bold'),fg="#FFFFFF" ,background=bgbuttoncolor, borderwidth=3 ,command= self.listaProveedores)
+        self.listPro_btn.grid(row=1, column=0, padx=50, pady=15)
+        self.actPro_btn=Button(wrapper7, text="ACTUALIZAR",font=('Sans','8','bold'),fg="#FFFFFF" ,background=bgbuttoncolor, borderwidth=3 ,command= self.llenarCombo2)
+        self.actPro_btn.grid(row=2, column=0, padx=50, pady=16)
+        
+        
  
         
 #---------------------------METODOS------------------------        
@@ -183,11 +196,11 @@ class listaDeTrabajos():
         for i in rows:
             self.tabla.insert('', 'end', values=i, tags = (i[0],))
         #Le agrego color a la fila depende su estado    
-        self.tabla.tag_configure('PENDIENTE', background='#FF2D00')
+        self.tabla.tag_configure('PENDIENTE', background='#D55E3B')
         self.tabla.tag_configure('DISEÑO EMPEZADO', background='#F3F705')
-        self.tabla.tag_configure('ENVIADO', background='#52E104')
-        self.tabla.tag_configure('LISTO', background='#52E104')
-        self.tabla.tag_configure('ENTREGADO', background='#52E104')     
+        self.tabla.tag_configure('ENVIADO', background='#B4E968')
+        self.tabla.tag_configure('LISTO', background='#B4E968')
+        self.tabla.tag_configure('ENTREGADO', background='#D3A7D4')     
     
     def listaClientes(self):
         listClientes = Toplevel()
