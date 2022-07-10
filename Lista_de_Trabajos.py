@@ -181,7 +181,13 @@ class listaDeTrabajos():
             self.tabla.delete(element)
         #consultando los datos
         for i in rows:
-            self.tabla.insert('', 'end', values=i) 
+            self.tabla.insert('', 'end', values=i, tags = (i[0],))
+        #Le agrego color a la fila depende su estado    
+        self.tabla.tag_configure('PENDIENTE', background='#FF2D00')
+        self.tabla.tag_configure('DISEÑO EMPEZADO', background='#F3F705')
+        self.tabla.tag_configure('ENVIADO', background='#52E104')
+        self.tabla.tag_configure('LISTO', background='#52E104')
+        self.tabla.tag_configure('ENTREGADO', background='#52E104')     
     
     def listaClientes(self):
         listClientes = Toplevel()
