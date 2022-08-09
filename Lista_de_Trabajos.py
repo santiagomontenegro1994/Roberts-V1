@@ -4,9 +4,6 @@ from tkinter import ttk
 from tkinter import messagebox
 import sqlite3
 from datetime import datetime
-from webbrowser import BackgroundBrowser
-
-from colorama import Back
 from Lista_de_Clientes import ListaDeClientes
 from Lista_de_Proveedores import ListaDeProveedores
 from Lista_de_Productos import listaDeProductos
@@ -76,7 +73,7 @@ class listaDeTrabajos():
         self.tabla.heading(9, text="ID")
         
         #dando el ancho de las columnas
-        self.tabla.column('#1', width=90, anchor='c')
+        self.tabla.column('#1', width=120, anchor='c')
         self.tabla.column('#2', width=70, anchor='c')
         self.tabla.column('#3', width=300, anchor='c')
         self.tabla.column('#4', width=300, anchor='c')
@@ -123,7 +120,7 @@ class listaDeTrabajos():
         self.lbl1.grid(row=1, column=0, padx=5, pady=3)
         self.combo4= ttk.Combobox(wrapper4, textvariable=self.t1, state="readonly")
         self.combo4.grid(row=1, column=1, pady=3, columnspan=3, sticky= W+E)
-        self.combo4["values"]=("PENDIENTE","DISEÑO EMPEZADO","ENVIADO","LISTO","ENTREGADO")
+        self.combo4["values"]=("PENDIENTE","PENDIENTE IMPRES.","DISEÑO EMPEZADO","MUESTRA ENVIADA","IMPRESO","ENVIADO","LISTO","ENTREGADO","FALTA DE PAGO")
         
         self.lbl1 = Label(wrapper4, text="Cliente",bg=bgcolor)
         self.lbl1.grid(row=2, column=0, padx=5, pady=3)
@@ -197,10 +194,14 @@ class listaDeTrabajos():
             self.tabla.insert('', 'end', values=i, tags = (i[0],))
         #Le agrego color a la fila depende su estado    
         self.tabla.tag_configure('PENDIENTE', background='#D55E3B')
+        self.tabla.tag_configure('PENDIENTE IMPRES.', background='#D55E3B')
         self.tabla.tag_configure('DISEÑO EMPEZADO', background='#F3F705')
+        self.tabla.tag_configure('MUESTRA ENVIADA', background='#F3F705')
+        self.tabla.tag_configure('IMPRESO', background='#B4E968')
         self.tabla.tag_configure('ENVIADO', background='#B4E968')
         self.tabla.tag_configure('LISTO', background='#B4E968')
-        self.tabla.tag_configure('ENTREGADO', background='#D3A7D4')     
+        self.tabla.tag_configure('ENTREGADO', background='#D3A7D4')
+        self.tabla.tag_configure('FALTA DE PAGO', background='#0078FF')     
     
     def listaClientes(self):
         listClientes = Toplevel()
@@ -331,7 +332,7 @@ class listaDeTrabajos():
     def modificar(self):
         estado=self.t1.get()
         cliente=self.t2.get()
-        trabajo=self.t3.get()
+        trabajo=self.t3.get().upper()
         proveedor=self.t4.get()
         precio=self.t5.get()
         seña=self.t6.get()
